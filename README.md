@@ -1,4 +1,4 @@
-# Hello, Stranger!
+# Hello Everyone!
 
 With this repo we showcase [Transparent Release](https://github.com/project-oak/transparent-release); read it together with [Getting Started With Your Repo](?).
 
@@ -30,7 +30,7 @@ Hello, Transparent Release!
 or you run the binary:
 
 ```
-bazel-bin/HelloTransparentRelease
+./bazel-bin/HelloTransparentRelease
 ```
 
 This binary we want to release!
@@ -38,6 +38,6 @@ This binary we want to release!
 Now, let's compute a sha256 digest of the binary:
 
 ```
-$ sha256sum HelloTransparentRelease
+sha256sum ./bazel-bin/HelloTransparentRelease
 8a87337c16d1386510f9d3dd36a744d267945370e40c18113c78bb67e2934cae  HelloTransparentRelease
 ```
