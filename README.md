@@ -1,8 +1,8 @@
 # Hello Everyone!
 
-With this repo we showcase [Transparent Release](https://github.com/project-oak/transparent-release); read it together with [Getting Started With Your Repo](?).
+With this repo we showcase [Transparent Release](https://github.com/project-oak/transparent-release); read it together with "Getting Started With Your Repo".
 
-In this repo lives a `[Java program](src/main/java/com/example/HelloTransparentRelease.java)` printing `Hello Transparent Release` to `stdout`. 
+In this repo lives a [Java program](src/main/java/com/example/HelloTransparentRelease.java) printing `Hello Transparent Release` to `stdout`. 
 
 We want to apply Transparent Release on the binary of this Java Program.
 
