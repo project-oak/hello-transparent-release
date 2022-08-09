@@ -10,9 +10,9 @@ First, we need to build the binary:
 
 ## Run from your command line
 
-Make sure you have [Bazel set-up](https://docs.bazel.build/versions/main/tutorial/java.html#before-you-begin).
+First, we need to make sure to have [Bazel set-up](https://docs.bazel.build/versions/main/tutorial/java.html#before-you-begin).
 
-Then, you can build with
+Then, we can build with
 
 ```
 bazel build //:HelloTransparentRelease 
@@ -27,13 +27,13 @@ INFO: Build completed successfully, 1 total action
 Hello, Transparent Release!
 ```
 
-or you run the binary:
+or we run the binary:
 
 ```
 ./bazel-bin/HelloTransparentRelease
 ```
 
-This binary we want to release!
+This is the binary we want to release!
 
 Now, let's compute a sha256 digest of the binary:
 
@@ -41,3 +41,14 @@ Now, let's compute a sha256 digest of the binary:
 sha256sum ./bazel-bin/HelloTransparentRelease
 8a87337c16d1386510f9d3dd36a744d267945370e40c18113c78bb67e2934cae  HelloTransparentRelease
 ```
+
+## Build a builder Docker image
+
+Next, we use the builder Docker image to build our binary. 
+
+First we need to build our builder Docker image:
+
+```
+./scripts/docker_build
+```
+
