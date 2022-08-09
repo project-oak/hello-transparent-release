@@ -4,11 +4,9 @@ With this repo we showcase [Transparent Release](https://github.com/project-oak/
 
 In this repo lives a [Java program](src/main/java/com/example/HelloTransparentRelease.java) printing `Hello Transparent Release` to `stdout`. 
 
-We want to apply Transparent Release on the binary of this Java Program.
+We want to apply Transparent Release on the binary of this Java program.
 
-First, we need to build the binary:
-
-## Run from your command line
+## Just to check: build the binary from the command line first.
 
 First, we need to make sure to have [Bazel set-up](https://docs.bazel.build/versions/main/tutorial/java.html#before-you-begin).
 
@@ -33,22 +31,33 @@ or we run the binary:
 ./bazel-bin/HelloTransparentRelease
 ```
 
-This is the binary we want to release!
+This is the binary we want to release: our `HelloTransparentRelease` binary.
 
-Now, let's compute a sha256 digest of the binary:
+Now, let's compute a sha256 digest of the `HelloTransparentRelease` binary:
 
 ```
 sha256sum ./bazel-bin/HelloTransparentRelease
-8a87337c16d1386510f9d3dd36a744d267945370e40c18113c78bb67e2934cae  HelloTransparentRelease
+8a87337c16d1386510f9d3dd36a744d267945370e40c18113c78bb67e2934cae HelloTransparentRelease
 ```
 
-## Build a builder Docker image
+Our goal is to make this hash to be the same for whoever builds the `HelloTransparentRelease` binary. That is why we build a builder Docker image.
 
-Next, we use the builder Docker image to build our binary. 
+## Build a builder Docker image to build the `HelloTransparentRelease` binary.
 
-First we need to build our builder Docker image:
+Our builder Docker image has everything installed to build the `HelloTransparentRelease` binary. 
+
+We need to provide a [Dockerfile](Dockerfile) to build our builder Docker image. To build our builder Docker image we run [`./scripts/docker_build`](./scripts/docker_build).
+
+We named our builder Docker image `'gcr.io/oak-ci/oak:hello-transparent-release'`.
+
+# Build the `HelloTransparentRelease` binary with the builder Docker image.
+
+To build binary we use the [`cmd/build` tool](https://github.com/project-oak/transparent-release#building-binaries-using-the-cmdbuild-tool) from [project-oak/transparent-release](https://github.com/project-oak/transparent-release). 
+
+We configure the  `cmd/build` in [buildconfigs/hello_transparent_release.toml](buildconfigs/hello_transparent_release.toml)
+
+From the checked out [transparent-release](https://github.com/project-oak/transparent-release) repo we call:
 
 ```
-./scripts/docker_build
+go run cmd/build/main.go -build_config_path <path-to-hello-transparent-release-repo>/hello-transparent-release/buildconfigs/hello_transparent_release.toml 
 ```
-
