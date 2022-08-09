@@ -50,11 +50,11 @@ We need to provide a [Dockerfile](Dockerfile) to build our builder Docker image.
 
 We named our builder Docker image `'gcr.io/oak-ci/oak:hello-transparent-release'`.
 
-# Build the `HelloTransparentRelease` binary with the builder Docker image.
+## Build the `HelloTransparentRelease` binary with the builder Docker image.
 
 To build binary we use the [`cmd/build` tool](https://github.com/project-oak/transparent-release#building-binaries-using-the-cmdbuild-tool) from [project-oak/transparent-release](https://github.com/project-oak/transparent-release). 
 
-We configure the  `cmd/build` in [buildconfigs/hello_transparent_release.toml](buildconfigs/hello_transparent_release.toml)
+We configure the  `cmd/build` in [buildconfigs/hello_transparent_release.toml](buildconfigs/hello_transparent_release.toml).
 
 From the checked out [transparent-release](https://github.com/project-oak/transparent-release) repo we call:
 
