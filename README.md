@@ -4,11 +4,11 @@
 <h1><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/project-oak/oak/blob/main/docs/oak-logo/svgs/oak-transparent-release-negative-colour.svg?sanitize=true"><source media="(prefers-color-scheme: light)" srcset="https://github.com/project-oak/oak/blob/main/docs/oak-logo/svgs/oak-transparent-release.svg?sanitize=true"><img alt="Project Oak Logo" src="docs/oak-logo/svgs/oak-logo.svg?sanitize=true"></picture></h1>
 <!-- Logo End -->
 
-With this repo we showcase [Transparent Release](https://github.com/project-oak/transparent-release); read it together with "Getting Started With Your Repo".
+With this `hello-transparent-release` repo we showcase [Transparent Release](https://github.com/project-oak/transparent-release).
 
-In this repo lives a [Java program](src/main/java/com/example/HelloTransparentRelease.java) printing `Hello Transparent Release` to `stdout`. 
+Here lives a [Java program](src/main/java/com/example/HelloTransparentRelease.java) printing `Hello Transparent Release` to `stdout`. 
 
-We want to apply Transparent Release on the binary of this Java program.
+We want to apply [Transparent Release](https://github.com/project-oak/transparent-release) on the binary of this Java program.
 
 ## Just to check: build the binary from the command line first.
 
@@ -56,12 +56,12 @@ We named our builder Docker image `'gcr.io/oak-ci/oak:hello-transparent-release'
 
 ## Build the `HelloTransparentRelease` binary with the builder Docker image.
 
-To build binary we use the [`cmd/build` tool](https://github.com/project-oak/transparent-release#building-binaries-using-the-cmdbuild-tool) from [project-oak/transparent-release](https://github.com/project-oak/transparent-release). 
+To build binary we use the [`cmd/builder` tool](https://github.com/project-oak/transparent-release#building-binaries-using-the-cmdbuilder-tool) from [project-oak/transparent-release](https://github.com/project-oak/transparent-release). 
 
-We configure the  `cmd/build` in [buildconfigs/hello_transparent_release.toml](buildconfigs/hello_transparent_release.toml).
+We configure the  `cmd/builder` in [buildconfigs/hello_transparent_release.toml](buildconfigs/hello_transparent_release.toml).
 
 From the checked out [transparent-release](https://github.com/project-oak/transparent-release) repo we call:
 
 ```
-go run cmd/build/main.go -build_config_path <path-to-hello-transparent-release-repo>/hello-transparent-release/buildconfigs/hello_transparent_release.toml 
+go run cmd/builder/main.go -build_config_path <path-to-hello-transparent-release-repo>/hello-transparent-release/buildconfigs/hello_transparent_release.toml 
 ```
