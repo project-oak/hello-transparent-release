@@ -3,7 +3,7 @@
 # Exit if environment variables HOST_UID and HOST_GID are not set.
 if [ ${HOST_UID:-0} -eq 0 ] || [ ${HOST_GID:-0} -eq 0 ] 
 then
-    echo "Host UID and GID unknown. Cannot change ownership of files."
+    echo "Host UID and GID unknown. Cannot change ownership of files." >&2
     exit 1
 fi
 
