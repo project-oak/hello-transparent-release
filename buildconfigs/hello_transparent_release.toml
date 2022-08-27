@@ -11,8 +11,8 @@ commit_hash= "57cc56ba78c24802f449b7e7ffce1a583f8f0a91"
 builder_image="gcr.io/oak-ci/oak:hello-transparent-release"
 
 # To build `HelloTransparentRelease` binary with the builder Docker image we use the command:
-command = ["bazel", "build", "//:HelloTransparentRelease"]
+command = ["./scripts/build_from_docker"]
 
 # Our builder Docker image writes the `HelloTransparentRelease` binary to this output path:
-output_path =  "./bazel-bin/HelloTransparentRelease"
+output_path =  "./out/HelloTransparentRelease"
 

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Exit if environment variables HOST_UID and HOST_GID are not set.
+if [ ${HOST_UID:-0} -eq 0 ] || [ ${HOST_GID:-0} -eq 0 ] 
+then
+    echo "Host UID and GID unknown. Cannot change ownership of files."
+    exit 1
+fi
+
+bazel build //:HelloTransparentRelease 
+
+# Because bazel builds in the home directory of root, copy bazel-bin to the 
+# directory out shared with the host.
+cp -Lr bazel-bin out 
+
+# 
+chown -R "${HOST_UID}":"${HOST_GID}" "out"
+
+# Clean the files generated during the build owned by root.
+bazel clean
