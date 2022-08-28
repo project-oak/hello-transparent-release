@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 
-# Exit if environment variables HOST_UID and HOST_GID are not set.
-if [ ${HOST_UID:-0} -eq 0 ] || [ ${HOST_GID:-0} -eq 0 ] 
-then
-    echo "Host UID and GID unknown. Cannot change ownership of files." >&2
-    exit 1
-fi
+# Directory in which to copy `bazel-bin`.
+#
+# Needs to be consistent with the `output_path` in `hello_transparent_release.toml`.
+readonly OUTPUT_DIR='out'
 
 bazel build //:HelloTransparentRelease 
 
 # Because bazel builds in the home directory of root, copy bazel-bin to the 
-# directory out shared with the host.
-cp -Lr bazel-bin out 
+# directory `out` shared with the host.
+cp -Lr bazel-bin ${OUTPUT_DIR} 
 
-# 
-chown -R "${HOST_UID}":"${HOST_GID}" "out"
+# Make the host user owner of `out`,
+# if environment variables HOST_UID and HOST_GID are set. 
+if [ ${HOST_UID:-0} -ne 0 ] && [ ${HOST_GID:-0} -ne 0 ] 
+then
+    chown -R "${HOST_UID}":"${HOST_GID}" "${OUTPUT_DIR}"
+fi
 
 # Clean the files generated during the build owned by root.
 bazel clean
