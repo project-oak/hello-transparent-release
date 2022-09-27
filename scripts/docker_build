@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # Build the builder Docker Image for hello-transparent-release binary.
-# We specify `gcr.io/oak-ci/` as default registry.
 readonly DOCKER_IMAGE_NAME='gcr.io/oak-ci/hello-transparent-release:latest'
 
 docker build \
