@@ -16,13 +16,13 @@ First, we need to make sure to have [Bazel set-up](https://docs.bazel.build/vers
 
 Then, we can build with
 
-```
+```bash
 bazel build //:HelloTransparentRelease 
 ```
 
 and run with
 
-```
+```bash
 bazel run //:HelloTransparentRelease
 [..]
 INFO: Build completed successfully, 1 total action
@@ -31,7 +31,7 @@ Hello, Transparent Release!
 
 or we run the binary:
 
-```
+```bash
 ./bazel-bin/HelloTransparentRelease
 ```
 
@@ -39,7 +39,7 @@ This is the binary we want to release: our `HelloTransparentRelease` binary.
 
 Now, let's compute a sha256 digest of the `HelloTransparentRelease` binary:
 
-```
+```bash
 sha256sum ./bazel-bin/HelloTransparentRelease
 8a87337c16d1386510f9d3dd36a744d267945370e40c18113c78bb67e2934cae HelloTransparentRelease
 ```
@@ -64,7 +64,7 @@ We can now see the latest builder Docker image [here](https://pantheon.corp.goog
 
 This also gives us the digest of the image: 
 
-```
+```bash
 sha256:eb0297df0a4df8621837369006421dd972cc3e68e6da94625539f669d49f1525
 ```
 
@@ -78,6 +78,13 @@ We configure the  `cmd/builder` in [buildconfigs/hello_transparent_release.toml]
 
 From the checked out [transparent-release](https://github.com/project-oak/transparent-release) repo we call:
 
-```
+```bash
 go run cmd/builder/main.go -build_config_path <path-to-hello-transparent-release-repo>/hello-transparent-release/buildconfigs/hello_transparent_release.toml 
+```
+
+The hash of the binary:
+
+```bash
+hello-transparent-release/out$ sha256sum HelloTransparentRelease
+e8e05d1d09af8952919bf6ab38e0cc5a6414ee2b5e21f4765b12421c5db0037e  HelloTransparentRelease
 ```
