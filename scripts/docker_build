@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Build the builder Docker Image for hello-transparent-release binary.
-readonly DOCKER_IMAGE_NAME='gcr.io/oak-ci/hello-transparent-release:latest'
+readonly DOCKER_IMAGE_NAME='europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/hello-transparent-release:latest'
 
 docker build \
   --tag="${DOCKER_IMAGE_NAME}" \

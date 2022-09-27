@@ -15,4 +15,3 @@ command = ["./scripts/build_from_docker"]
 
 # Our builder Docker image writes the `HelloTransparentRelease` binary to this output path:
 output_path =  "./out/HelloTransparentRelease"
-

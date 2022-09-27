@@ -55,13 +55,13 @@ That is why we build a builder Docker image.
 
 Our builder Docker image has everything installed to build the `HelloTransparentRelease` binary. 
 
-We need to provide a [Dockerfile](Dockerfile) to build our builder Docker image. We name our Docker image `hello-transparent-release`. Our builder Docker image has to be publicly available, so we upload it to a registry: `grc.io/oak-ci`.
+We need to provide a [Dockerfile](Dockerfile) to build our builder Docker image. We name our Docker image `hello-transparent-release`. Our builder Docker image has to be publicly available, so we upload it to a registry: `europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/`.
 
 We want the binary built by the builder Docker image to have the same permissions as the user. To do so, we rely on [rootless Docker](https://docs.docker.com/engine/security/rootless/).
 
 To build our builder Docker image we run [`./scripts/docker_build`](./scripts/docker_build); to uplodad it to the registry we run [`./scripts/docker_push`] (given the right permissions).
 
-We can now see the latest builder Docker image [here](https://pantheon.corp.google.com/gcr/images/oak-ci/global/hello-transparent-release?project=oak-ci). 
+We can now see the latest builder Docker image [here](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release?project=oak-ci). 
 
 Uploading the Docker image will give us a manifest and a `DIGEST` to identify the image. For the _local_ builder Docker image we have no `DIGEST`:
 
@@ -71,7 +71,7 @@ REPOSITORY                                TAG       DIGEST    IMAGE ID       CRE
 gcr.io/oak-ci/hello-transparent-release   latest    <none>    d682d6f0f2bb   20 hours ago   1.19GB
 ```
 
-However, in the published registry [we find](https://pantheon.corp.google.com/gcr/images/oak-ci/global/hello-transparent-release@sha256:eb0297df0a4df8621837369006421dd972cc3e68e6da94625539f669d49f1525/details?project=oak-ci)
+However, in the published registry [we find](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release/hello-transparent-release?project=oak-ci)
 
 ```bash
 sha256:d682d6f0f2bbec373f4a541b55c03d43e52e774caa40c4b121be6e96b5d01f56

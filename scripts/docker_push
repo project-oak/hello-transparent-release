@@ -9,7 +9,8 @@
 # - `gcloud auth login`
 # - `gcloud config set project oak-ci`
 # - `gcloud auth configure-docker`
+# - `gcloud auth configure-docker europe-west2-docker.pkg.dev`
 
-readonly DOCKER_IMAGE_NAME='gcr.io/oak-ci/hello-transparent-release:latest'
+readonly DOCKER_IMAGE_NAME='europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/hello-transparent-release:latest'
 
 docker push "${DOCKER_IMAGE_NAME}"
