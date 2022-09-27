@@ -2,12 +2,7 @@
 
 # Build the builder Docker Image for hello-transparent-release binary.
 # We specify `gcr.io/oak-ci/` as default registry.
-readonly DOCKER_IMAGE_NAME='gcr.io/oak-ci/oak:hello-transparent-release'
-
-# Enable BuildKit for improved performance and storage management.
-#
-# See https://docs.docker.com/develop/develop-images/build_enhancements/.
-export DOCKER_BUILDKIT=1
+readonly DOCKER_IMAGE_NAME='gcr.io/oak-ci/hello-transparent-release:latest'
 
 docker build \
   --tag="${DOCKER_IMAGE_NAME}" \

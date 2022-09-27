@@ -50,9 +50,19 @@ Our goal is to make this hash to be the same for whoever builds the `HelloTransp
 
 Our builder Docker image has everything installed to build the `HelloTransparentRelease` binary. 
 
-We need to provide a [Dockerfile](Dockerfile) to build our builder Docker image. To build our builder Docker image we run [`./scripts/docker_build`](./scripts/docker_build).
+We need to provide a [Dockerfile](Dockerfile) to build our builder Docker image. We name our Docker image `hello-transparent-release`. Our builder Docker image has to be publicly available, so we upload it to a registry: `grc.io/oak-ci`.
 
-We named our builder Docker image `'gcr.io/oak-ci/oak:hello-transparent-release'`.
+To build our builder Docker image we run [`./scripts/docker_build`](./scripts/docker_build), to uplodad it to the registry we run [`./scripts/docker_push`] (given the right permissions).
+
+We can now see the latest builder Docker image [here](https://pantheon.corp.google.com/gcr/images/oak-ci/global/hello-transparent-release?project=oak-ci). 
+
+This also gives us the digest of the image: 
+
+```
+sha256:eb0297df0a4df8621837369006421dd972cc3e68e6da94625539f669d49f1525
+```
+
+We will need this digest to identify the image.
 
 ## Build the `HelloTransparentRelease` binary with the builder Docker image.
 

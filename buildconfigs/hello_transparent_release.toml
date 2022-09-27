@@ -5,10 +5,10 @@ repo = "https://github.com/project-oak/hello-transparent-release"
 
 # To build the `HelloTransparentRelease` binary we check out the repo from this commit
 # (note to self: update, if a commit changes the builder Docker image):
-commit_hash= "6da617f71a9d1781da220a8a9d9c131c963006b6"
+commit_hash= "774212d35ab19bc9e3bddec1ac2b27878158f2e3"
 
 # To build the `HelloTransparentRelease` binary we use this builder Docker image:
-builder_image="gcr.io/oak-ci/oak:hello-transparent-release"
+builder_image="gcr.io/oak-ci/hello-transparent-release@sha256:eb0297df0a4df8621837369006421dd972cc3e68e6da94625539f669d49f1525"
 
 # To build `HelloTransparentRelease` binary with the builder Docker image we use the command:
 command = ["./scripts/build_from_docker"]
