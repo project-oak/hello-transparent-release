@@ -6,11 +6,11 @@
 
 With this `hello-transparent-release` repo we showcase [Transparent Release](https://github.com/project-oak/transparent-release).
 
-Here lives a [Java program](src/main/java/com/example/HelloTransparentRelease.java) printing `Hello Transparent Release` to `stdout`. 
+In this repo lives a [Java program](src/main/java/com/example/HelloTransparentRelease.java) printing `Hello Transparent Release` to `stdout`. 
 
 We want to apply [Transparent Release](https://github.com/project-oak/transparent-release) on the binary of this Java program.
 
-## Just to check: build the binary from the command line first.
+## [Optional] Build the binary from the command line first.
 
 First, we need to make sure to have [Bazel set-up](https://docs.bazel.build/versions/main/tutorial/java.html#before-you-begin).
 
@@ -44,7 +44,13 @@ sha256sum ./bazel-bin/HelloTransparentRelease
 8a87337c16d1386510f9d3dd36a744d267945370e40c18113c78bb67e2934cae HelloTransparentRelease
 ```
 
-Our goal is to make this hash to be the same for whoever builds the `HelloTransparentRelease` binary. That is why we build a builder Docker image.
+Our goal is to make this hash to be the same for whoever builds the `HelloTransparentRelease` binary. 
+
+That is why we build a builder Docker image.
+
+## Install rootless Docker
+
+We want the binary built by the builder Docker image to have the same permissions as the user. To do so, we rely on [rootless Docker](https://docs.docker.com/engine/security/rootless/).
 
 ## Build a builder Docker image to build the `HelloTransparentRelease` binary.
 
