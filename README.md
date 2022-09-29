@@ -10,7 +10,7 @@ In this repo lives a [Java program](src/main/java/com/example/HelloTransparentRe
 
 We want to apply [Transparent Release](https://github.com/project-oak/transparent-release) on the binary of this Java program.
 
-## [Optional] Build the binary from the command line first.
+## [Optional] Build the binary from the command line
 
 First, we need to make sure to have [Bazel set-up](https://docs.bazel.build/versions/main/tutorial/java.html#before-you-begin).
 
@@ -48,47 +48,69 @@ This sha256 digest might or might not be the same on your machine.
 
 Our goal is to make this to be the same for whoever builds the `HelloTransparentRelease` binary. 
 
-That is why we build a builder Docker image.
+That is why we build a builder Docker image that has everything installed to build the `HelloTransparentRelease` binary. 
 
+## Build a builder Docker image
 
-## Build a builder Docker image to build the `HelloTransparentRelease` binary.
+We need to provide a [Dockerfile](Dockerfile) to build our builder Docker image. We name our Docker image `hello-transparent-release`. Our builder Docker image has to be publicly available, so we push it to a registry: `europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/`.
 
-Our builder Docker image has everything installed to build the `HelloTransparentRelease` binary. 
+We want the `HelloTransparentRelease` binary built by the builder Docker image to have the same permissions as the user. To do so, we rely on [rootless Docker](https://docs.docker.com/engine/security/rootless/).
 
-We need to provide a [Dockerfile](Dockerfile) to build our builder Docker image. We name our Docker image `hello-transparent-release`. Our builder Docker image has to be publicly available, so we upload it to a registry: `europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/`.
-
-We want the binary built by the builder Docker image to have the same permissions as the user. To do so, we rely on [rootless Docker](https://docs.docker.com/engine/security/rootless/).
-
-To build our builder Docker image we run [`./scripts/docker_build`](./scripts/docker_build); to uplodad it to the registry we run [`./scripts/docker_push`] (given the right permissions).
+To build our builder Docker image we run [`./scripts/docker_build`](./scripts/docker_build); to uplodad it to the registry we run [`./scripts/docker_push`](./scripts/docker_push) (given the right permissions).
 
 We can now see the latest builder Docker image [here](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release?project=oak-ci). 
 
-Uploading the Docker image will give us a manifest and a `DIGEST` to identify the image. For the _local_ builder Docker image we have no `DIGEST`:
+Pushing the Docker image to a registry will give us a manifest and a `DIGEST` to identify the image.
 
 ```bash
-docker images --digests gcr.io/oak-ci/hello-transparent-release:latest
-REPOSITORY                                TAG       DIGEST    IMAGE ID       CREATED        SIZE
-gcr.io/oak-ci/hello-transparent-release   latest    <none>    d682d6f0f2bb   20 hours ago   1.19GB
+docker images --digests  europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/hello-transparent-release
 ```
 
-However, in the published registry [we find](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release/hello-transparent-release?project=oak-ci)
+We also find the digest [published in the registry](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release/hello-transparent-release?project=oak-ci)
 
 ```bash
 sha256:d682d6f0f2bbec373f4a541b55c03d43e52e774caa40c4b121be6e96b5d01f56
 ```
 
-
-## Build the `HelloTransparentRelease` binary with the builder Docker image.
+## Build with the `cmd/builder` tool
 
 To build binary we use the [`cmd/builder` tool](https://github.com/project-oak/transparent-release#building-binaries-using-the-cmdbuilder-tool) from [project-oak/transparent-release](https://github.com/project-oak/transparent-release). 
 
-We configure the  `cmd/builder` in [buildconfigs/hello_transparent_release.toml](buildconfigs/hello_transparent_release.toml).
+### Configuring the `cmd/builder` tool
 
-From the checked out [transparent-release](https://github.com/project-oak/transparent-release) repo we call:
+We configure the  `cmd/builder` with [buildconfigs/hello_transparent_release.toml](buildconfigs/hello_transparent_release.toml). 
+
+### Build the `cmd/builder` tool from sources
+
+Check out the [transparent-release](https://github.com/project-oak/transparent-release) repo and call:
 
 ```bash
-go run cmd/builder/main.go -build_config_path <path-to-hello-transparent-release-repo>/hello-transparent-release/buildconfigs/hello_transparent_release.toml 
+transparent-release$ go run cmd/builder/main.go -build_config_path <absolute-or-relative-path-to-hello-transparent-release-repo>/hello-transparent-release/buildconfigs/hello_transparent_release.toml
 ```
+
+You will see:
+
+```bash
+2022/09/27 17:55:29 The hash of the binary is: e8e05d1d09af8952919bf6ab38e0cc5a6414ee2b5e21f4765b12421c5db0037e
+2022/09/27 17:55:30 Storing the provenance in [..]/transparent-release/provenance.json
+```
+
+### Use the released `cmd/builder` tool
+
+```bash
+wget https://github.com/project-oak/transparent-release/releases/download/v0.1/transparent-release_0.1_Linux_x86_64.tar.gz 
+
+tar -xvzf transparent-release_0.1_Linux_x86_64.tar.gz
+
+./transparent-release  -build_config_path ./buildconfigs/hello_transparent_release.toml 
+```
+
+### Some useful flags
+
+- specify a local `-git_root_dir=<path-to->/hello-transparent-release`
+- specify `provenance_path=<relative-path>hello_transparent_release_provenance.json`
+
+### The binary
 
 The sha256 digest of the binary:
 
@@ -98,3 +120,5 @@ e8e05d1d09af8952919bf6ab38e0cc5a6414ee2b5e21f4765b12421c5db0037e  HelloTranspare
 ```
 
 This should now be the same on your machine! Please let us know if not!
+
+You can also find this in the [provenance file](provenance.json)

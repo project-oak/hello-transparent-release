@@ -1,17 +1,18 @@
-# This is the buildconfig for building our `HelloTransparentRelease` binary.
+# This is the buildconfig for building the `HelloTransparentRelease` binary.
 
 # We want to build a binary with sources from this repo:
 repo = "https://github.com/project-oak/hello-transparent-release"
 
 # To build the `HelloTransparentRelease` binary we check out the repo from the commit with:
 # (Usually, we'll just pick the latest one.)
-commit_hash= "23794a3108839fc16a52b049ff301b78ac6eec8e"
+commit_hash= "709f78fe67c7d534398c1da086ca00026ae4c2d5"
 
 # To build the `HelloTransparentRelease` binary we use this builder Docker image:
-builder_image="gcr.io/oak-ci/hello-transparent-release@sha256:eb0297df0a4df8621837369006421dd972cc3e68e6da94625539f669d49f1525"
+builder_image="europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/hello-transparent-release@sha256:eb0297df0a4df8621837369006421dd972cc3e68e6da94625539f669d49f1525"
 
 # To build `HelloTransparentRelease` binary with the builder Docker image we use the command:
-command = ["./scripts/build_from_docker"]
+# (We specify the output_path with --output_user_root)
+command = ["bazel", "--output_user_root=./out", "build", "//:HelloTransparentRelease"]
 
-# Our builder Docker image writes the `HelloTransparentRelease` binary to this output path:
-output_path =  "./out/HelloTransparentRelease"
+# The builder Docker image writes the `HelloTransparentRelease` binary to this relative output_path:
+output_path =  "./out"
