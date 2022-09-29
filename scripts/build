@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Directory in which to copy `bazel-bin`.
+#
+# Needs to be consistent with the `output_path` in `buildconfigs/hello_transparent_release.toml`.
+readonly OUTPUT_DIR='out'
+
+bazel build //:HelloTransparentRelease 
+
+# Because bazel-bin links to a directory in the Docker container, copy to a 
+# directory `out` shared with the host.
+cp -Lr bazel-bin ${OUTPUT_DIR} 
