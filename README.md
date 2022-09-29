@@ -105,3 +105,8 @@ e8e05d1d09af8952919bf6ab38e0cc5a6414ee2b5e21f4765b12421c5db0037e  HelloTranspare
 ```
 
 This should now be the same on your machine! Please let us know if not!
+
+
+### The provenance file
+
+Now, the generated (pretty printed) [provenance file](provenance.json) tells exactly how we build the `HelloTransparentRelease` binary.
