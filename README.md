@@ -49,7 +49,7 @@ We want the `HelloTransparentRelease` binary built by the builder Docker image t
 
 To build our builder Docker image we run [`./scripts/docker_build`](./scripts/docker_build).
 
-Our builder Docker image has to be publicly available, so we push it to a registry: [europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release) with [`./scripts/docker_push`](./scripts/docker_push) (given the right permissions).
+Our builder Docker image has to be publicly available, so we push it to a registry ([given the right permissions](https://github.com/project-oak/hello-transparent-release/blob/16dafa1fa125db3c40bbb5794044e790936a6656/scripts/docker_push#L3-L12)): [europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release) with [`./scripts/docker_push`](./scripts/docker_push). 
 
 We can now see the latest builder Docker image [here](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release?project=oak-ci). 
 
