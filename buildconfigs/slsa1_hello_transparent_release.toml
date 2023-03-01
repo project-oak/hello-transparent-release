@@ -1,0 +1,8 @@
+# This is the buildconfig for building the `HelloTransparentRelease` binary using
+# https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/docker.
+
+# To build `HelloTransparentRelease` binary with the builder Docker image we use the command:
+command = ["./scripts/build"]
+
+# The builder Docker image writes the `HelloTransparentRelease` binary to this relative artifact_path:
+artifact_path =  "./out/HelloTransparentRelease"
