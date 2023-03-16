@@ -14,8 +14,8 @@ jobs:
       contents: write
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_docker-based_slsa3.yml@main
     with:
-      builder-image: "gcr.io/oak-ci/hello-transparent-release"
-      builder-digest: "sha256:eb0297df0a4df8621837369006421dd972cc3e68e6da94625539f669d49f1525"
-      config-path: "buildconfigs/slsa1_hello_transparent_release.toml"
+      builder-image: "maven"
+      builder-digest: "sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779"
+      config-path: "buildconfigs/hello_transparent_release_mvn.toml"
       provenance-name: "hello_transparent_release.intoto"
       compile-builder: true
