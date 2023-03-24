@@ -81,7 +81,56 @@ expect to find the built files once the execution of the `docker run` command
 is completed. You can use wildcards to specify the path. This is useful when
 your command generates multiple files.
 
+[Here](buildconfigs/hello_transparent_release_mvn.toml) is the buildconfig we
+use for building the `hello-transparent-release` binary as a `jar` file.
+
 ## Create a GitHub Actions workflow
+
+Now we have everything that we need to use the
+[Container-based SLSA3 builder](https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/docker).
+
+The workflow that we use in this repository contains a single job:
+
+```yaml
+jobs:
+  generate_provenance:
+    permissions:
+      actions: read
+      id-token: write
+      contents: write
+    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_docker-based_slsa3.yml@main
+    with:
+      builder-image: "maven"
+      builder-digest: "sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779"
+      config-path: "buildconfigs/hello_transparent_release_mvn.toml"
+      provenance-name: "hello_transparent_release.intoto"
+      compile-builder: true
+```
+
+Here we have specified the builder image by its name (`maven`) and digest
+(`sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779`).
+You can find this information on the container registry that you intend to use.
+
+The third input parameter is `config-path` which is the path to the buildconfig
+file that we created above.
+
+The next input parameter is provided for convenience. We have specified a
+custom name for the provenance that the container-based SLSA3 builder
+generates. This is useful where you have multiple jobs in your workflow, each
+building and generating a provenance for a different binary.
+
+Note that while the workflow is called the "container-based SLSA3 builder", the
+file where this reusable workflow is implemented is called
+`builder_docker-based_slsa3.yml`! This is to be explicit about the use of the
+`Docker-based build tool` in this workflow.
+
+See the complete workflow [here](.github/workflows/provenance.yaml).
+We run this workflow both on pull-request events, and on push events. But only
+the provenances that are generated on push events are signed.
+
+For a detailed description about how to use the container-based SLSA3 builder,
+see
+[this documentation](https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/docker).
 
 ## Run the builder tool locally
 
