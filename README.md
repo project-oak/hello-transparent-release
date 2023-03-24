@@ -21,6 +21,7 @@ built binary.
 For this we are going to do the following:
 
 1. [The things you need](#the-things-you-need)
+1. [The Docker-based build tool](#the-docker-based-build-tool)
 1. [Create a buildconfig file](#create-a-buildconfig-file)
 1. [Create a GitHub Actions workflow to call the container-based SLSA3 builder](#create-a-github-actions-workflow)
 1. [Run the builder tool locally](#run-the-builder-tool-locally)
@@ -30,15 +31,55 @@ For this we are going to do the following:
 
 To use the container-based SLSA3 builder, you need
 
-1. An OCI builder image, in which the build commands for building the binary are executed
-1. A buildconfig file, containing the build configuration info
+1. An OCI builder image, in which the build commands for building the binary
+   are executed.
+1. A GitHub repository containing your source code.
+1. A buildconfig file, containing the build configuration info.
 1. A GitHub actions workflow to call the container-based SLSA3 builder.
 
 For the most of this tutorial, we will use a pre-built Maven Docker image. But
 you can, as well, use a custom image, as described
 [below](#create-a-custom-docker-image).
 
+## The Docker-based build tool
+
+The Docker-based build tool uses Docker CLI to build one or more binaries from
+your source code. It is used by the container-based SLSA3 builder to build your
+binaries, but you can also use it locally for testing.
+
+The Docker-based build tool first fetches the source code from your Git
+repository at a given commit hash. When called by the container-based SLSA3
+builder, the commit hash is taken from the GitHub context, and you does not
+have to explicitly provide it. When running it locally, you have to explicitly
+specify the SHA1 digest of the Git commit as one of the inputs to the tool.
+
+Once the Git repository is fetched and checked-out at the given commit,
+Docker-based build tool uses the `docker run` command, with OCI builder image
+and a command. You have to explicitly specify the OCI builder image both when
+using container-based SLSA3 builder, and when using the Docker-based build tool
+locally.
+
+Similarly, in both cases, you have to explicitly specify the command, by
+including it in a buildconfig file, that you provide as input to
+container-based SLSA3 builder or directly to Docker-based build tool, when
+using it locally.
+
 ## Create a buildconfig file
+
+A buildconfig file is a simple `toml` file that currently is required to
+contain only two fields: `command` and `artifact_path`. In the future, we may
+add support for additional optional build configuration information.
+
+`command` is a string array containing the command that will be passed to
+`docker run` together with the builder image (e.g., the Maven image mentioned
+above). The `docker run` runs at the root of your Git repository and is
+expected to build one or more files (binaries or other software artifacts) in a
+path under the root of your repository.
+
+`artifact_path` is a path, relative to the root of your repository, where you'd
+expect to find the built files once the execution of the `docker run` command
+is completed. You can use wildcards to specify the path. This is useful when
+your command generates multiple files.
 
 ## Create a GitHub Actions workflow
 
