@@ -134,40 +134,115 @@ see
 
 ## Run the builder tool locally
 
-### Fetch the Docker-based build tool
+As mentioned above, you can use the Docker-based build tool locally. You can
+use it to verify your buildconfig, build your binary or output artifacts, or
+verify a previously generated provenance. In this section, we only describe how
+to build the artifacts using the Docker-based build tool. Please consult
+[this documentation](https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/docker#command-line-tool)
+for other use cases, and a full list of features.
 
-Update:
+### Build the Docker-based build tool from source
+
+First you need to to build the Docker-based build tool from source.
+
+First, checkout the
+[slsa-github-generator](https://github.com/slsa-framework/slsa-github-generator)
+repository.
 
 ```bash
-wget https://github.com/project-oak/transparent-release/releases/download/v0.1/transparent-release_0.1_Linux_x86_64.tar.gz
-tar -xvzf transparent-release_0.1_Linux_x86_64.tar.gz
-./transparent-release  -build_config_path ./buildconfigs/hello_transparent_release.toml
+$ git clone --depth 1 git@github.com:slsa-framework/slsa-github-generator.git
 ```
 
-### Some useful flags
-
-### The binary
-
-The sha256 digest of the binary:
+Then build the Docker-based build tool using the following commands:
 
 ```bash
-hello-transparent-release/out$ sha256sum HelloTransparentRelease
-e8e05d1d09af8952919bf6ab38e0cc5a6414ee2b5e21f4765b12421c5db0037e  HelloTransparentRelease
+$ cd slsa-github-generator/
+$ cd cd internal/builders/docker/
+$ go build -o docker-builder *.go
 ```
 
-This should now be the same on your machine! Please let us know if not!
+This builds a `docker-builder`, which you can use to build your own binaries with.
 
-### The build definition
+### Build the binary
+
+Use the following command to build the binary, and measure its SHA256 digest:
+
+```bash
+$ ./docker-builder build \
+  --build-config-path buildconfigs/hello_transparent_release_mvn.toml \
+  --builder-image maven@sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779 \
+  --git-commit-digest sha1:211e4cdf273680b8ed8e0ba4de0131c2dfe7cc94 \
+  --source-repo git+https://github.com/project-oak/hello-transparent-release \
+  --subjects-path subjects.json \
+  --output-folder /tmp/build-outputs \
+  --force-checkout
+```
+
+This command will:
+
+- Create a temp directory
+- Checkout the `hello-transparent-release` repository into that temp directory
+- Check out the commit `sha1:211e4cdf273680b8ed8e0ba4de0131c2dfe7cc94`
+- Run the `docker run` command using
+  - `maven@sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779` as the builder image, and
+  - `buildconfigs/hello_transparent_release_mvn.toml` from the `hello-transparent-release` repository as the buildconfig
+- Generates the `subject.json` file and stores the SHA256 digest of the generated `jar` file in it
+- The temp directory, including the generated jar file, is removed when the execution of the command is completed.
+
+Here is the content of the `subject.json` file in this case:
+
+```json
+[
+  {
+    "name": "hello-transparent-release-1.0-SNAPSHOT.jar",
+    "digest": {
+      "sha256": "bce4fb947412570f5408256613c94f38e7e5339a7d5a6a2556142de070d54540"
+    }
+  }
+]
+```
+
+Note that you may get a different digest if you run this command. This is
+because the build with Maven is not reproducible.
+[Below](#create-a-custom-docker-image) we show how you can use Bazel and a
+custom Docker file to make the build reproducible.
+
+If you want to keep the binary, and inspect it after the execution of the
+command, you can use the following command:
+
+```bash
+$ cd <root-of-the-repo>
+$ <path-to-docker-builder> build \
+  --build-config-path buildconfigs/hello_transparent_release_mvn.toml \
+  --builder-image maven@sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779 \
+  --git-commit-digest sha1:eb70c4bd784368b5c363b4e7132bcf5fb1d698d1 \
+  --source-repo git+https://github.com/project-oak/hello-transparent-release \
+  --subjects-path subjects.json \
+  --output-folder /tmp/build-outputs
+```
+
+Note that this command is very similar to the one above, but we are running it
+in the root of the repo, and we have removed the `--force-checkout` option. In
+this case, instead of fetching the sourced from the GitHub repository, we use
+the local source code. Also, we have used the latest commit on the local repo
+as the commit hash. However, this is not very accurate, since your local
+repository may contain uncommitted changes. This is not an issue if you are
+using the tool only for testing.
 
 ## Create a custom Docker image
 
-So far, we have been relying on a pre-built Maven image for building the binary. However, you could use a custom image with the container-based SLSA3 builder. One way to create a custom image is to use a Dockerfile. In this section, we walk you through creating a custom builder image using a Dockerfile.
+So far, we have been relying on a pre-built Maven image for building the
+binary. However, you could use a custom image with the container-based SLSA3
+builder. One way to create a custom image is to use a Dockerfile. In this
+section, we walk you through creating a custom builder image using a
+Dockerfile.
 
 This time, we are going to build the binary using Bazel instead of Maven.
 
 ### [Optional] Build the binary from the command line
 
-First, we need to make sure to have [Bazel set-up](https://docs.bazel.build/versions/main/tutorial/java.html#before-you-begin).
+First, we need to make sure to have
+[Bazel set-up](https://docs.bazel.build/versions/main/tutorial/java.html#before-you-begin).
 
 Then, we can build with
 
@@ -192,23 +267,37 @@ sha256sum ./out/HelloTransparentRelease
 
 This sha256 digest might or might not be the same on your machine.
 
-Our goal is to make this to be the same for whoever builds the `HelloTransparentRelease` binary.
+Our goal is to make this to be the same for whoever builds the
+`HelloTransparentRelease` binary.
 
-That is why we build a builder Docker image that has everything installed to build the `HelloTransparentRelease` binary.
+That is why we build a builder Docker image that has everything installed to
+build the `HelloTransparentRelease` binary.
 
 ### Build a builder Docker image
 
-We need to provide a [Dockerfile](Dockerfile) to build our builder Docker image. We name our Docker image `hello-transparent-release`.
+We need to provide a [Dockerfile](Dockerfile) to build our builder Docker
+image. We name our Docker image `hello-transparent-release`.
 
-We want the `HelloTransparentRelease` binary built by the builder Docker image to have the same permissions as the user. To do so, we use [rootless Docker](https://docs.docker.com/engine/security/rootless/).
+We want the `HelloTransparentRelease` binary built by the builder Docker image
+to have the same permissions as the user. To do so, we use
+[rootless Docker](https://docs.docker.com/engine/security/rootless/).
 
-To build our builder Docker image we run [`./scripts/docker_build`](./scripts/docker_build).
+To build our builder Docker image we run
+[`./scripts/docker_build`](./scripts/docker_build).
 
-Our builder Docker image has to be publicly available, so we push it to a registry ([given the right permissions](https://github.com/project-oak/hello-transparent-release/blob/16dafa1fa125db3c40bbb5794044e790936a6656/scripts/docker_push#L3-L12)): [europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release) with [`./scripts/docker_push`](./scripts/docker_push).
+Our builder Docker image has to be publicly available, so we push it to a
+registry
+([given the right permissions](https://github.com/project-oak/hello-transparent-release/blob/16dafa1fa125db3c40bbb5794044e790936a6656/scripts/docker_push#L3-L12)):
+[europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release)
+with [`./scripts/docker_push`](./scripts/docker_push).
 
-We can now see the latest builder Docker image [here](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release?project=oak-ci).
+We can now see the latest builder Docker image
+[here](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release?project=oak-ci).
 
-Pushing the Docker image to a registry will give us a manifest and a `DIGEST` to identify the image [published in the registry](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release/hello-transparent-release?project=oak-ci). We will need this digest to configure the `cmd/builder` tool.
+Pushing the Docker image to a registry will give us a manifest and a `DIGEST`
+to identify the image
+[published in the registry](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release/hello-transparent-release?project=oak-ci).
+We will need this digest to configure the `cmd/builder` tool.
 
 ```bash
 sha256:d682d6f0f2bbec373f4a541b55c03d43e52e774caa40c4b121be6e96b5d01f56
@@ -216,6 +305,13 @@ sha256:d682d6f0f2bbec373f4a541b55c03d43e52e774caa40c4b121be6e96b5d01f56
 
 ### Use the custom builder Docker in the GitHub workflow
 
-#### Configuring the `cmd/builder` tool
+You can now update the GitHub Actions workflow to use the your custom builder
+image. For this, all you have to do is to update the `builder-image` and the
+`builder-digest` as follows:
 
-The buildconfig in [buildconfigs/hello_transparent_release.toml](buildconfigs/hello_transparent_release.toml) holds the configuration for `cmd/builder`.
+```yaml
+with:
+  builder-image: "europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/hello-transparent-release"
+  builder-digest: "sha256:eb0297df0a4df8621837369006421dd972cc3e68e6da94625539f669d49f1525"
+  # ...
+```
