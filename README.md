@@ -4,11 +4,26 @@
 <h1><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/project-oak/oak/blob/main/docs/oak-logo/svgs/oak-transparent-release-negative-colour.svg?sanitize=true"><source media="(prefers-color-scheme: light)" srcset="https://github.com/project-oak/oak/blob/main/docs/oak-logo/svgs/oak-transparent-release.svg?sanitize=true"><img alt="Project Oak Logo" src="docs/oak-logo/svgs/oak-logo.svg?sanitize=true"></picture></h1>
 <!-- Logo End -->
 
-With this `hello-transparent-release` repo we showcase the user of the [Container-based SLSA3 builder](https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/docker), which uses a `Docker-based build tool`. This tool used to be part of the [Transparent Release](https://github.com/project-oak/transparent-release) project, hence the name of this repo :smile:
+With this `hello-transparent-release` repo we showcase the user of the
+[Container-based SLSA3 builder](https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/docker),
+which uses a `Docker-based build tool`. This tool used to be part of the
+[Transparent Release](https://github.com/project-oak/transparent-release)
+project, hence the name of this repo :smile:
 
-In this repo lives a [Java program](src/main/java/com/example/HelloTransparentRelease.java) printing `Hello Transparent Release` to `stdout`.
+In this repo lives a
+[Java program](src/main/java/com/example/HelloTransparentRelease.java)
+printing `Hello Transparent Release` to `stdout`.
 
-We want to apply use the Container-based SLSA3 builder to build the binary of this Java program, and generate a non-forgeable provenance statement for the built binary.
+We want to apply use the Container-based SLSA3 builder to build the binary of
+this Java program, and generate a non-forgeable provenance statement for the
+built binary.
+
+For this we are going to do the following:
+
+1. Create a buildconfig file
+2. Create a GitHub Actions workflow to call the container-based SLSA3 builder
+3. Run the builder tool locally
+4. Create a custom Docker image to use with the container-based SLSA3 builder
 
 ## [Optional] Build the binary from the command line
 
