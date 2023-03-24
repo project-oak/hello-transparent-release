@@ -20,10 +20,23 @@ built binary.
 
 For this we are going to do the following:
 
+1. [The things you need](#the-things-you-need)
 1. [Create a buildconfig file](#create-a-buildconfig-file)
-2. [Create a GitHub Actions workflow to call the container-based SLSA3 builder](#create-a-github-actions-workflow)
-3. [Run the builder tool locally](#run-the-builder-tool-locally)
-4. [Create a custom Docker image to use with the container-based SLSA3 builder](#create-a-custom-docker-image)
+1. [Create a GitHub Actions workflow to call the container-based SLSA3 builder](#create-a-github-actions-workflow)
+1. [Run the builder tool locally](#run-the-builder-tool-locally)
+1. [Create a custom Docker image to use with the container-based SLSA3 builder](#create-a-custom-docker-image)
+
+## The things you need
+
+To use the container-based SLSA3 builder, you need
+
+1. An OCI builder image, in which the build commands for building the binary are executed
+1. A buildconfig file, containing the build configuration info
+1. A GitHub actions workflow to call the container-based SLSA3 builder.
+
+For the most of this tutorial, we will use a pre-built Maven Docker image. But
+you can, as well, use a custom image, as described
+[below](#create-a-custom-docker-image).
 
 ## Create a buildconfig file
 
