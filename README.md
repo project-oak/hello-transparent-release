@@ -20,10 +20,10 @@ built binary.
 
 For this we are going to do the following:
 
-1. Create a buildconfig file
-2. Create a GitHub Actions workflow to call the container-based SLSA3 builder
-3. Run the builder tool locally
-4. Create a custom Docker image to use with the container-based SLSA3 builder
+1. [Create a buildconfig file](#create-a-buildconfig-file)
+2. [Create a GitHub Actions workflow to call the container-based SLSA3 builder](#create-a-github-actions-workflow)
+3. [Run the builder tool locally](#run-the-builder-tool-locally)
+4. [Create a custom Docker image to use with the container-based SLSA3 builder](#create-a-custom-docker-image)
 
 ## Create a buildconfig file
 
