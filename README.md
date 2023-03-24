@@ -25,7 +25,44 @@ For this we are going to do the following:
 3. Run the builder tool locally
 4. Create a custom Docker image to use with the container-based SLSA3 builder
 
-## [Optional] Build the binary from the command line
+## Create a buildconfig file
+
+## Create a GitHub Actions workflow
+
+## Run the builder tool locally
+
+### Fetch the Docker-based build tool
+
+Update:
+
+```bash
+wget https://github.com/project-oak/transparent-release/releases/download/v0.1/transparent-release_0.1_Linux_x86_64.tar.gz
+tar -xvzf transparent-release_0.1_Linux_x86_64.tar.gz
+./transparent-release  -build_config_path ./buildconfigs/hello_transparent_release.toml
+```
+
+### Some useful flags
+
+### The binary
+
+The sha256 digest of the binary:
+
+```bash
+hello-transparent-release/out$ sha256sum HelloTransparentRelease
+e8e05d1d09af8952919bf6ab38e0cc5a6414ee2b5e21f4765b12421c5db0037e  HelloTransparentRelease
+```
+
+This should now be the same on your machine! Please let us know if not!
+
+### The build definition
+
+## Create a custom Docker image
+
+So far, we have been relying on a pre-built Maven image for building the binary. However, you could use a custom image with the container-based SLSA3 builder. One way to create a custom image is to use a Dockerfile. In this section, we walk you through creating a custom builder image using a Dockerfile.
+
+This time, we are going to build the binary using Bazel instead of Maven.
+
+### [Optional] Build the binary from the command line
 
 First, we need to make sure to have [Bazel set-up](https://docs.bazel.build/versions/main/tutorial/java.html#before-you-begin).
 
@@ -56,7 +93,7 @@ Our goal is to make this to be the same for whoever builds the `HelloTransparent
 
 That is why we build a builder Docker image that has everything installed to build the `HelloTransparentRelease` binary.
 
-## Build a builder Docker image
+### Build a builder Docker image
 
 We need to provide a [Dockerfile](Dockerfile) to build our builder Docker image. We name our Docker image `hello-transparent-release`.
 
@@ -74,53 +111,8 @@ Pushing the Docker image to a registry will give us a manifest and a `DIGEST` to
 sha256:d682d6f0f2bbec373f4a541b55c03d43e52e774caa40c4b121be6e96b5d01f56
 ```
 
-## Build with the `cmd/builder` tool
+### Use the custom builder Docker in the GitHub workflow
 
-To build the `HelloTransparentRelease` binary we use the [`cmd/builder` tool](https://github.com/project-oak/transparent-release#building-binaries-using-the-cmdbuilder-tool) from [project-oak/transparent-release](https://github.com/project-oak/transparent-release).
-
-### Configuring the `cmd/builder` tool
+#### Configuring the `cmd/builder` tool
 
 The buildconfig in [buildconfigs/hello_transparent_release.toml](buildconfigs/hello_transparent_release.toml) holds the configuration for `cmd/builder`.
-
-### Build the `cmd/builder` tool from sources
-
-Check out the [transparent-release](https://github.com/project-oak/transparent-release) repo and call:
-
-```bash
-transparent-release$ go run cmd/builder/main.go -build_config_path <absolute-or-relative-path-to-hello-transparent-release-repo>/hello-transparent-release/buildconfigs/hello_transparent_release.toml
-```
-
-You will see:
-
-```bash
-2022/09/27 17:55:29 The hash of the binary is: e8e05d1d09af8952919bf6ab38e0cc5a6414ee2b5e21f4765b12421c5db0037e
-2022/09/27 17:55:30 Storing the provenance in [..]/transparent-release/provenance.json
-```
-
-### Use the released `cmd/builder` tool
-
-```bash
-wget https://github.com/project-oak/transparent-release/releases/download/v0.1/transparent-release_0.1_Linux_x86_64.tar.gz
-tar -xvzf transparent-release_0.1_Linux_x86_64.tar.gz
-./transparent-release  -build_config_path ./buildconfigs/hello_transparent_release.toml
-```
-
-### Some useful flags
-
-- specify a local `-git_root_dir=<path-to->/hello-transparent-release`
-- specify the `provenance_path=<relative-path>hello_transparent_release_provenance.json`
-
-### The binary
-
-The sha256 digest of the binary:
-
-```bash
-hello-transparent-release/out$ sha256sum HelloTransparentRelease
-e8e05d1d09af8952919bf6ab38e0cc5a6414ee2b5e21f4765b12421c5db0037e  HelloTransparentRelease
-```
-
-This should now be the same on your machine! Please let us know if not!
-
-### The provenance file
-
-Now, the generated (pretty printed) [provenance file](provenance.json) tells exactly how we build the `HelloTransparentRelease` binary.
