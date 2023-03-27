@@ -14,14 +14,20 @@ In this repo lives a
 [Java program](src/main/java/com/example/HelloTransparentRelease.java)
 printing `Hello Transparent Release` to `stdout`.
 
-We want to apply use the Container-based SLSA3 builder to build the binary of
-this Java program, and generate a non-forgeable provenance statement for the
-built binary.
+We want to generate a non-forgeable provenance statement for the
+`Hello Transparent Release` binary. To do this, we use the Container-based
+SLSA3 builder GitHub workflow. The workflow first builds the binary, then
+generates a [SLSA v1.0 provenance](https://slsa.dev/spec/v1.0/) statement,
+signs it, and publishes the signature to
+[Rekor](https://docs.sigstore.dev/rekor/overview/).
 
-For this we are going to do the following:
+First, we are going to give an overview of:
 
-1. [The things you need](#the-things-you-need)
+1. [The things you need](#the-things-you-need), and
 1. [The Docker-based build tool](#the-docker-based-build-tool)
+
+Then we will describe how to:
+
 1. [Create a buildconfig file](#create-a-buildconfig-file)
 1. [Create a GitHub Actions workflow to call the container-based SLSA3 builder](#create-a-github-actions-workflow)
 1. [Run the builder tool locally](#run-the-builder-tool-locally)
@@ -31,14 +37,14 @@ For this we are going to do the following:
 
 To use the container-based SLSA3 builder, you need
 
-1. An OCI builder image, in which the build commands for building the binary
-   are executed.
+1. An OCI builder image, in which the build command for building the binary
+   is executed.
 1. A GitHub repository containing your source code.
 1. A buildconfig file, containing the build configuration info.
 1. A GitHub actions workflow to call the container-based SLSA3 builder.
 
 For most of this tutorial, we will use a pre-built Maven Docker image. But you
-can, as well, use a custom image, as described
+can, as well, create and use a custom image, as described
 [below](#create-a-custom-docker-image).
 
 ## The Docker-based build tool
@@ -52,25 +58,26 @@ use it locally for testing.
 The Docker-based build tool first fetches the source code from your Git
 repository at a given commit hash. When called by the container-based SLSA3
 builder, the commit hash is taken from the GitHub context, and you do not have
-to explicitly provide it. When running it locally, you have to explicitly
-specify the SHA1 digest of the Git commit as one of the inputs to the tool.
+to explicitly provide it. When running the Docker-based build tool locally, you
+have to explicitly specify the SHA1 digest of the Git commit as one of the
+inputs to the tool.
 
-Once the Git repository is fetched and checked-out at the given commit,
-Docker-based build tool uses the `docker run` command, with OCI builder image
-and a command. You have to explicitly specify the OCI builder image both when
-using container-based SLSA3 builder, and when using the Docker-based build tool
-locally.
+Once the Docker-based build tool has checked out the Git repository at the
+given commit, it runs the `docker run` command to build the binary. For this,
+you need to provide the Docker-based build tool with an OCI builder image, and
+a build command.
 
-Similarly, in both cases, you have to explicitly specify the command, by
-including it in a buildconfig file, that you provide as input to
-container-based SLSA3 builder or directly to Docker-based build tool, when
-using it locally.
+You have to explicitly specify the OCI builder image both when using
+container-based SLSA3 builder, and when using the Docker-based build tool
+locally. Similarly, in both cases, you have to explicitly specify the build
+command, by including it in a buildconfig file, and providing that as input to
+the container-based SLSA3 builder or directly to Docker-based build tool.
 
 ## Create a buildconfig file
 
-A buildconfig file is a simple `toml` file that currently is required to
-contain only two fields: `command` and `artifact_path`. In the future, we may
-add support for additional optional build configuration information (see
+A buildconfig file is a simple `toml` file. Currently you are required to
+provide two fields: `command` and `artifact_path`. In the future, we may add
+support for additional (possibly optional) build configuration information (see
 [the tracking issue](https://github.com/slsa-framework/slsa-github-generator/issues/1811)).
 
 `command` is a string array containing the command that will be passed to
@@ -104,17 +111,21 @@ jobs:
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_docker-based_slsa3.yml@main
     with:
       builder-image: "maven"
-      builder-digest: "sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779"
+      builder-digest: "sha256:545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e"
       config-path: "buildconfigs/hello_transparent_release_mvn.toml"
       provenance-name: "hello_transparent_release.intoto"
       compile-builder: true
 ```
 
 Here we have specified the builder image by its name (`maven`) and digest
-(`sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779`).
+(`sha256:545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e`).
 You can find this information on the container registry that you intend to use.
+For this tutorial we used the latest
+[official maven image](https://hub.docker.com/_/maven/tags) for `linux/amd64`,
+form 27 March 2023. The info page on hub.docker.com contains the image
+[digest](https://hub.docker.com/layers/library/maven/latest/images/sha256-545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e).
 
-The third input parameter is `config-path` which is the path to the buildconfig
+The third input parameter is `config-path`, which is the path to the buildconfig
 file that we created above.
 
 The next input parameter is provided for convenience. We have specified a
@@ -173,7 +184,7 @@ Use the following command to build the binary, and measure its SHA256 digest:
 ```bash
 $ ./docker-builder build \
   --build-config-path buildconfigs/hello_transparent_release_mvn.toml \
-  --builder-image maven@sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779 \
+  --builder-image maven@sha256:545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e \
   --git-commit-digest sha1:211e4cdf273680b8ed8e0ba4de0131c2dfe7cc94 \
   --source-repo git+https://github.com/project-oak/hello-transparent-release \
   --subjects-path subjects.json \
@@ -187,7 +198,7 @@ This command will:
 - Checkout the `hello-transparent-release` repository into that temp directory
 - Check out the commit `sha1:211e4cdf273680b8ed8e0ba4de0131c2dfe7cc94`
 - Run the `docker run` command using
-  - `maven@sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779` as the builder image, and
+  - `maven@sha256:545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e` as the builder image, and
   - `buildconfigs/hello_transparent_release_mvn.toml` from the `hello-transparent-release` repository as the buildconfig
 - Generates the `subject.json` file and stores the SHA256 digest of the generated `jar` file in it
 - The temp directory, including the generated jar file, is removed when the execution of the command is completed.
@@ -217,7 +228,7 @@ command, you can use the following command:
 $ cd <root-of-the-repo>
 $ <path-to-docker-builder> build \
   --build-config-path buildconfigs/hello_transparent_release_mvn.toml \
-  --builder-image maven@sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779 \
+  --builder-image maven@sha256:545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e \
   --git-commit-digest sha1:eb70c4bd784368b5c363b4e7132bcf5fb1d698d1 \
   --source-repo git+https://github.com/project-oak/hello-transparent-release \
   --subjects-path subjects.json \
