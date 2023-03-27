@@ -15,7 +15,7 @@ jobs:
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_docker-based_slsa3.yml@main
     with:
       builder-image: "maven"
-      builder-digest: "sha256:0c7eb85349cecff10e865ef298bdef117024e931b7ad9a4e527d41c897a6a779"
+      builder-digest: "sha256:545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e"
       config-path: "buildconfigs/hello_transparent_release_mvn.toml"
       provenance-name: "hello_transparent_release.intoto"
       compile-builder: true
