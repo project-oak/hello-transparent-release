@@ -4,7 +4,7 @@
 <h1><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/project-oak/oak/blob/main/docs/oak-logo/svgs/oak-transparent-release-negative-colour.svg?sanitize=true"><source media="(prefers-color-scheme: light)" srcset="https://github.com/project-oak/oak/blob/main/docs/oak-logo/svgs/oak-transparent-release.svg?sanitize=true"><img alt="Project Oak Logo" src="docs/oak-logo/svgs/oak-logo.svg?sanitize=true"></picture></h1>
 <!-- Logo End -->
 
-With this `hello-transparent-release` repo we showcase the user of the
+With this `hello-transparent-release` repo we showcase the use of the
 [Container-based SLSA3 builder](https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/docker),
 which uses a `Docker-based build tool`. This tool used to be part of the
 [Transparent Release](https://github.com/project-oak/transparent-release)
@@ -37,20 +37,22 @@ To use the container-based SLSA3 builder, you need
 1. A buildconfig file, containing the build configuration info.
 1. A GitHub actions workflow to call the container-based SLSA3 builder.
 
-For the most of this tutorial, we will use a pre-built Maven Docker image. But
-you can, as well, use a custom image, as described
+For most of this tutorial, we will use a pre-built Maven Docker image. But you
+can, as well, use a custom image, as described
 [below](#create-a-custom-docker-image).
 
 ## The Docker-based build tool
 
-The Docker-based build tool uses Docker CLI to build one or more binaries from
-your source code. It is used by the container-based SLSA3 builder to build your
-binaries, but you can also use it locally for testing.
+The
+[Docker-based build tool](https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/docker#command-line-tool)
+uses Docker CLI to build one or more binaries from your source code. It is used
+by the container-based SLSA3 builder to build your binaries, but you can also
+use it locally for testing.
 
 The Docker-based build tool first fetches the source code from your Git
 repository at a given commit hash. When called by the container-based SLSA3
-builder, the commit hash is taken from the GitHub context, and you does not
-have to explicitly provide it. When running it locally, you have to explicitly
+builder, the commit hash is taken from the GitHub context, and you do not have
+to explicitly provide it. When running it locally, you have to explicitly
 specify the SHA1 digest of the Git commit as one of the inputs to the tool.
 
 Once the Git repository is fetched and checked-out at the given commit,
@@ -68,7 +70,8 @@ using it locally.
 
 A buildconfig file is a simple `toml` file that currently is required to
 contain only two fields: `command` and `artifact_path`. In the future, we may
-add support for additional optional build configuration information.
+add support for additional optional build configuration information (see
+[the tracking issue](https://github.com/slsa-framework/slsa-github-generator/issues/1811)).
 
 `command` is a string array containing the command that will be passed to
 `docker run` together with the builder image (e.g., the Maven image mentioned
@@ -205,7 +208,7 @@ Here is the content of the `subject.json` file in this case:
 Note that you may get a different digest if you run this command. This is
 because the build with Maven is not reproducible.
 [Below](#create-a-custom-docker-image) we show how you can use Bazel and a
-custom Docker file to make the build reproducible.
+custom Dockerfile to make the build reproducible.
 
 If you want to keep the binary, and inspect it after the execution of the
 command, you can use the following command:
