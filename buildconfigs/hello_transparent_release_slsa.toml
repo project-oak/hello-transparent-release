@@ -1,0 +1,5 @@
+# To build `HelloTransparentRelease` binary with the builder Docker image we use the command:
+command = ["./scripts/build"]
+
+# The builder Docker image writes the `HelloTransparentRelease` binary to this relative output_path:
+artifact_path =  "./out/HelloTransparentRelease"
