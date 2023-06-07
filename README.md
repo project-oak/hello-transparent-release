@@ -121,8 +121,7 @@ Here we have specified the builder image by its name (`maven`) and digest
 (`sha256:545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e`).
 You can find this information on the container registry that you intend to use.
 For this tutorial we used the latest
-[official maven image](https://hub.-
-.com/_/maven/tags) for `linux/amd64`,
+[official maven image](https://hub.docker.com/_/maven/tags) for `linux/amd64`,
 form 27 March 2023. The info page on hub.docker.com contains the image
 [digest](https://hub.docker.com/layers/library/maven/latest/images/sha256-545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e).
 
