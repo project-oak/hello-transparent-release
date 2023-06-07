@@ -108,7 +108,7 @@ jobs:
       actions: read
       id-token: write
       contents: write
-    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_docker-based_slsa3.yml@main
+    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_container-based_slsa3.yml@v1.7.0
     with:
       builder-image: "maven"
       builder-digest: "sha256:545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e"
@@ -121,7 +121,8 @@ Here we have specified the builder image by its name (`maven`) and digest
 (`sha256:545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e`).
 You can find this information on the container registry that you intend to use.
 For this tutorial we used the latest
-[official maven image](https://hub.docker.com/_/maven/tags) for `linux/amd64`,
+[official maven image](https://hub.-
+.com/_/maven/tags) for `linux/amd64`,
 form 27 March 2023. The info page on hub.docker.com contains the image
 [digest](https://hub.docker.com/layers/library/maven/latest/images/sha256-545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e).
 
@@ -135,7 +136,7 @@ building and generating a provenance for a different binary.
 
 Note that while the workflow is called the "container-based SLSA3 builder", the
 file where this reusable workflow is implemented is called
-`builder_docker-based_slsa3.yml`! This is to be explicit about the use of the
+`builder_container-based_slsa3.yml`! This is to be explicit about the use of the
 `Docker-based build tool` in this workflow.
 
 See the complete workflow [here](.github/workflows/provenance.yaml).
