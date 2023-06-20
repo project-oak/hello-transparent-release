@@ -108,7 +108,7 @@ jobs:
       actions: read
       id-token: write
       contents: write
-    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_docker-based_slsa3.yml@main
+    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_container-based_slsa3.yml@v1.7.0
     with:
       builder-image: "maven"
       builder-digest: "sha256:545933763425d1afde0cb5da093dd14c8bf49c0849ca78d7f4f827894d7b1f1e"
@@ -135,7 +135,7 @@ building and generating a provenance for a different binary.
 
 Note that while the workflow is called the "container-based SLSA3 builder", the
 file where this reusable workflow is implemented is called
-`builder_docker-based_slsa3.yml`! This is to be explicit about the use of the
+`builder_container-based_slsa3.yml`! This is to be explicit about the use of the
 `Docker-based build tool` in this workflow.
 
 See the complete workflow [here](.github/workflows/provenance.yaml).
