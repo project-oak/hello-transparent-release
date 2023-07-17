@@ -303,7 +303,9 @@ Our builder Docker image has to be publicly available, so we push it to a
 registry
 ([given the right permissions](https://github.com/project-oak/hello-transparent-release/blob/16dafa1fa125db3c40bbb5794044e790936a6656/scripts/docker_push#L3-L12)):
 [europe-west2-docker.pkg.dev/oak-ci/hello-transparent-release/](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release)
-with [`./scripts/docker_push`](./scripts/docker_push).
+with [`./scripts/docker_push`](./scripts/docker_push). To achieve public
+availability, the image must be made Readable by all users on Google Artifact
+Registry.
 
 We can now see the latest builder Docker image
 [here](https://pantheon.corp.google.com/artifacts/docker/oak-ci/europe-west2/hello-transparent-release?project=oak-ci).
